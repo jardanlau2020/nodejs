@@ -38,8 +38,14 @@ jobs:
           context: .
           push: true
           platforms: linux/amd64,linux/arm64
+          # 2026-10-01 修：原 tags 为 ghcr.io/${owner}/deplexo:deplexo。
+          # 但 deplexo 这个 GHCR 包已被绑定到别的仓库，GITHUB_TOKEN 推它必然
+          # denied: permission_denied: write_package（09-18 起连续失败）。
+          # 改用与仓库同名的包 ghcr.io/<owner>/<repo>，与 zai2api 的可用写法一致，
+          # 首次推送会创建并绑定到本仓库，无需再去 packages settings 手动授权。
           tags: |
-            ghcr.io/${{ github.repository_owner }}/deplexo:deplexo
+            ghcr.io/${{ github.repository }}:latest
+            ghcr.io/${{ github.repository }}:${{ github.sha }}
           labels: |
             org.opencontainers.image.source=https://github.com/${{ github.repository }}
             org.opencontainers.image.description=HTTP Server
